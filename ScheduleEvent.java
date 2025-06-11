@@ -1,14 +1,15 @@
 package To_Do_List;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
+//수정 불가
 public class ScheduleEvent {
-    private String title;
-    private String description;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String title; //제목
+    private String description; //내용
+    private LocalDateTime startTime; //시작 시간
+    private LocalDateTime endTime; //종료 시간
 
+    //생성자
     public ScheduleEvent(String title, String description, LocalDateTime startTime, LocalDateTime endTime) {
         this.title = title;
         this.description = description;
@@ -16,26 +17,14 @@ public class ScheduleEvent {
         this.endTime = endTime;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
+    //접근자들
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public LocalDateTime getEndTime() { return endTime; }
 
     @Override
     public String toString() {
-        return " [" + startTime.format(DateTimeFormatter.ofPattern("HH:mm")) +
-                " ~ " + endTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "]"
-                + (description == null || description.isEmpty() ? "" : " - " + description);
+        return "[" + startTime.toLocalTime() + " - " + endTime.toLocalTime() + "] " + title;
     }
 }
