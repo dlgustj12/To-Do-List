@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-// 5. 전체 달력 UI (한 달의 날짜별 SchedulePanel 관리)
+// 5. 전체 달력 UI (한 달의 날짜별 cell 관리)
+//사용자와 상호작용하는 메인 UI
 public class CalendarGUI extends JFrame {
 
     private JPanel calendarPanel; // 달력(날짜 셀) 패널
@@ -20,8 +21,8 @@ public class CalendarGUI extends JFrame {
     // dayCellPanelMap : 특정 날짜에 해당하는 DayCellPanel 객체를 빠르게 찾기 위한 맵.
 
     public CalendarGUI() {
-        setTitle("Swing Calendar");
-        setSize(1200, 900);
+        setTitle("Calendar_ToDoList_Of_LHS");
+        setSize(1300, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -64,19 +65,30 @@ public class CalendarGUI extends JFrame {
         monthLabel.setText(currentDate.getMonth().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " " + currentDate.getYear());
 
         // 요일
-        for (DayOfWeek dow : DayOfWeek.values()) {
+        DayOfWeek[] koreanOrder = {
+                //일월화수목금토 로
+                DayOfWeek.SUNDAY,
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+                DayOfWeek.SATURDAY
+        };
+        for (DayOfWeek dow : koreanOrder) {
             JLabel lbl = new JLabel(dow.getDisplayName(TextStyle.SHORT, Locale.KOREAN), SwingConstants.CENTER);
-            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
+            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD,25f));
+
             calendarPanel.add(lbl);
         }
 
         // 시작 요일 및 총 일 수
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
-        int startDay = firstDayOfMonth.getDayOfWeek().getValue(); // 1(Mon)~7(Sun)
+        int startDay = firstDayOfMonth.getDayOfWeek().getValue() % 7; // 0(일)-6(토)
         int daysInMonth = yearMonth.lengthOfMonth();
 
         // 앞 빈칸
-        for (int i = 1; i < startDay; i++) calendarPanel.add(new JLabel(""));
+        for (int i = 0; i < startDay; i++) calendarPanel.add(new JLabel(""));
 
         // 날짜 셀
         for (int day = 1; day <= daysInMonth; day++) {
@@ -86,8 +98,8 @@ public class CalendarGUI extends JFrame {
             calendarPanel.add(panel);
         }
 
-        calendarPanel.revalidate();
-        calendarPanel.repaint();
+        calendarPanel.revalidate(); //배치(레이아웃) 갱신
+        calendarPanel.repaint(); //화면(그래픽) 갱신
     }
 
     // 전체 날짜 셀 일정 새로고침
