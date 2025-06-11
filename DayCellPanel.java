@@ -71,8 +71,14 @@ class DayCellPanel extends JPanel {
         scheduleListPanel = new JPanel();
         scheduleListPanel.setLayout(new BoxLayout(scheduleListPanel, BoxLayout.Y_AXIS));
         scheduleListPanel.setBackground(new Color(250,250,250));
-        add(scheduleListPanel, BorderLayout.CENTER);
 
+        // 스크롤 생성
+        JScrollPane scrollPane = new JScrollPane(scheduleListPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(15); // 스크롤 속도 조정
+
+        add(scrollPane, BorderLayout.CENTER);
 
         refreshEventList();
     }
@@ -127,11 +133,11 @@ class DayCellPanel extends JPanel {
     private void showAddEventDialog() {
         List<ScheduleEvent> events = scheduleManager.getEventsByDate(date.atStartOfDay());
 
-        // 1. 일정 개수 제한
+       /* // 1. 일정 개수 제한
         if (events.size() >= 5) {
             JOptionPane.showMessageDialog(this, "일정이 꽉찼습니다!!");
             return;
-        }
+        }*/
 
         JTextField titleField = new JTextField();
         JTextField contentField = new JTextField();
@@ -157,19 +163,19 @@ class DayCellPanel extends JPanel {
             String startText = startField.getText();
             String endText = endField.getText();
 
-            // 2. 예외처리 : 제목이나 내용 공백
+            //예외처리 : 제목이나 내용 공백
             if (title.trim().isEmpty() || content.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "제목과 내용을 모두 입력하세요.");
                 return;
             }
 
-            // 3. 예외처리 : 시간 형식 [--:--]이 아닐때
+            //예외처리 : 시간 형식 [--:--]이 아닐때
             if (!startText.matches("\\d{2}:\\d{2}") || !endText.matches("\\d{2}:\\d{2}")) {
                 JOptionPane.showMessageDialog(this, "시간 형식은 [HH:mm] 입니다.");
                 return;
             }
 
-            // 4. 예외처리 : HH가 24이상 이거나 mm이 60이상일떄
+            //예외처리 : HH가 24이상 이거나 mm이 60이상일떄
             int startH = Integer.parseInt(startText.substring(0, 2));
             int startM = Integer.parseInt(startText.substring(3, 5));
             int endH = Integer.parseInt(endText.substring(0, 2));
@@ -185,13 +191,13 @@ class DayCellPanel extends JPanel {
                 LocalTime startTime = LocalTime.parse(startText);
                 LocalTime endTime = LocalTime.parse(endText);
 
-                //5. 예외처리 : 시작시간 > 종료시간 일떄
+                //예외처리 : 시작시간 > 종료시간 일떄
                 if (!startTime.isBefore(endTime)) {
                     JOptionPane.showMessageDialog(this, "시작 시간은 종료 시간보다 빨라야 합니다.");
                     return;
                 }
 
-                //6. 예외처리 : 다른 일정이랑 시간 중복됐을때
+                //예외처리 : 다른 일정이랑 시간 중복됐을때
                 boolean overlap = false;
                 for (ScheduleEvent event : events) {
                     LocalTime existStart = event.getStartTime().toLocalTime();
